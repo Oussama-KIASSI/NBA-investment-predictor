@@ -3,7 +3,7 @@ To lunch the app on your local machine, do the following:
 - run app.py
 
 The project is organized as follow:
-
+```
 Oussama_KIASSI-NBA_Solution
 │   app.py
 │   EDA & Processing.ipynb
@@ -52,7 +52,7 @@ Oussama_KIASSI-NBA_Solution
     │
     └───helpers
             generate_fields.html
-
-I wrote utils.py that groups useful functions for our notebooks.
-I created notebooks for Exploratory Data Analysis, Preprocessing and Models development.
-I developped app.py for model deployment, you may run it on your local machine for prediction.
+```
+- I wrote utils.py that groups useful functions for our notebooks.
+- I created notebooks for Exploratory Data Analysis, Preprocessing and Models development.
+- I developped app.py for model deployment, you may run it on your local machine for prediction.
