@@ -1,9 +1,2 @@
-/Models/Baseline/
-/Models/Scaler/
-/Models/TunedModels/
-/Data/
-/.vscode/
-/.venv/
-/.ipynb_checkpoints/
 Pipfile
 Pipfile.lock
