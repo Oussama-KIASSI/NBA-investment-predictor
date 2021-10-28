@@ -39,7 +39,7 @@ def predict():
         else:
             return f"Player {f.Name.data} isn't worth investing."
     else:
-        return render_template('form.html', form=f)
+        return render_template('predict.html', form=f)
 
 
 @app.route('/predict_from_request', methods=['POST'])
