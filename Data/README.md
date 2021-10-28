@@ -1,4 +1,5 @@
 This folder is organized as follows :
+```
 Data
 │   README.md
 │
@@ -10,5 +11,6 @@ Data
 └───Raw
         Metadata.md
         nba_logreg.csv
+```
 
 it contains two folders : Raw (for raw data) and Processed (for processed data)

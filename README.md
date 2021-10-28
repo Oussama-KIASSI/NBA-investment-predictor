@@ -4,7 +4,7 @@ To lunch the app on your local machine, do the following:
 
 The project is organized as follow:
 ```
-Oussama_KIASSI-NBA_Solution
+NBA-investment-predictor
 │   app.py
 │   EDA & Processing.ipynb
 │   Model development.ipynb
