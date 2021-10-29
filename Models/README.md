@@ -1,6 +1,3 @@
-This folder represent the models store as it has every model, scaler, pipeline developed in this project.
-
-```
 Models
 │   Pipeline.pkl
 │   README.md
@@ -21,4 +18,5 @@ Models
 └───Tuned Models
         SGDClassifier.pkl
         SVC.pkl
-```
+
+This folder represent the models store as it has every model, scaler, pipeline developed in this project.
