@@ -19,7 +19,7 @@ def load_data(data_store_path: str = r"Data",
     :param data: file containing data
     :return: pandas dataframe of loaded data
     """
-    path = os.path.join(data_store_path, data_class, data)
+    path = os.path.join(data_store_path, data_class, data)  # path where data is stored
     return read_csv(path)
 
 
@@ -32,8 +32,8 @@ def save_data(data: DataFrame, data_store_path: str = r"Data",
     :param data_class: data class or data subfolder (Raw or Processed)
     :param file: file name and extension
     """
-    path = os.path.join(data_store_path, data_class, file)
-    data.to_csv(path, index=False)
+    path = os.path.join(data_store_path, data_class, file)  # path where data will be stored
+    data.to_csv(path, index=False)  # save data to path in csv format
 
 
 def missing_values_table(data: DataFrame):
@@ -42,17 +42,18 @@ def missing_values_table(data: DataFrame):
     :param data: pandas dataframe to analyze
     :return: return a pandas Dataframe of columns with missing values
     """
-    mis_val = data.isnull().sum()
-    mis_val_percent = 100 * data.isnull().sum() / len(data)
+    mis_val = data.isnull().sum()  # count missing values in dataframe
+    mis_val_percent = 100 * data.isnull().sum() / len(data)  # count percentage of missing values in dataframe
     mis_val_table = concat([mis_val, mis_val_percent], axis=1)
     mis_val_table_ren_columns = mis_val_table.rename(
         columns={0: 'Missing Values', 1: '% of Total Values'})
+    # keep only columns with empty rows and sort using percentage
     mis_val_table_ren_columns = mis_val_table_ren_columns[
         mis_val_table_ren_columns.iloc[:, 1] != 0].sort_values(
         '% of Total Values', ascending=False).round(2)
     print("Your selected dataframe has " + str(data.shape[1]) + " columns.\n" +
           "There are " + str(mis_val_table_ren_columns.shape[0]) +
-          " columns that have missing values.")
+          " columns that have missing values.")  # print recap message concerning missing values
     return mis_val_table_ren_columns
 
 
@@ -64,9 +65,9 @@ def distplot_by_target(data: DataFrame, columns: list, target: str = "Target"):
     :param target: target or label column
     """
     for c in columns:
-        displot(data, x=c, hue=target, multiple="layer", palette="mako")
-        title(target + " Distribution by " + c)
-        show()
+        displot(data, x=c, hue=target, multiple="layer", palette="mako")  # distribution plot
+        title(target + " Distribution by " + c)  # set title
+        show()  # show plot
 
 
 def correlation_heatmap(data: DataFrame, figsize: tuple = (12, 9), matrix: bool = False):
@@ -76,10 +77,10 @@ def correlation_heatmap(data: DataFrame, figsize: tuple = (12, 9), matrix: bool 
     :param figsize: plot figure size
     :param matrix: boolean to indicate whether to show p-value (True) or not (False)
     """
-    corrmat = data.corr()
-    figure(figsize=figsize)
-    heatmap(corrmat, vmax=.8, annot=matrix, cmap="mako", square=True)
-    show()
+    corrmat = data.corr()  # compute correlation
+    figure(figsize=figsize)  # create figure with figsize
+    heatmap(corrmat, vmax=.8, annot=matrix, cmap="mako", square=True)  # plot heatmap of correlation
+    show()  # show plot
 
 
 def compare_features(data: pandas.DataFrame, data_select: pandas.DataFrame, models: list):
@@ -91,12 +92,14 @@ def compare_features(data: pandas.DataFrame, data_select: pandas.DataFrame, mode
     :return: dataframe of features selection method comparison
     """
     # Features and target of original data
-    X = data.iloc[:, 1:-1].to_numpy()
-    Y = data.iloc[:, -1].to_numpy()
+    X = data.iloc[:, 1:-1].to_numpy()  # features
+    Y = data.iloc[:, -1].to_numpy()  # target
+    # fit and transform scaler
     X_scaled = MinMaxScaler().fit_transform(X)
     # Features and target of dataframe with selected features
     X_select = data_select.iloc[:, 1:-1].to_numpy()
     Y_select = data_select.iloc[:, -1].to_numpy()
+    # fit and transform scaler
     X_select_scaled = MinMaxScaler().fit_transform(X_select)
     comparison = {}
     for model in models:
@@ -106,6 +109,7 @@ def compare_features(data: pandas.DataFrame, data_select: pandas.DataFrame, mode
         # new data evaluation
         model.fit(X_select_scaled, Y_select)
         Y_select_predict = model.predict(X_select_scaled)
+        # set comparison row
         comparison[model.__class__.__name__] = [balanced_accuracy_score(Y, Y_predict),
                                                 balanced_accuracy_score(Y_select, Y_select_predict)]
     return DataFrame.from_dict(comparison, orient="index", columns=["All features", "Selected features"])
@@ -121,23 +125,31 @@ def compare_models_kfolds(x_train: numpy.ndarray, y_train: numpy.ndarray, models
     :return: dataframe to compare models and metrics
     """
     comparison = {}
+    # stratified kfolds cross validation of data
     skf = StratifiedKFold(n_splits=kfolds, shuffle=True, random_state=0)
-    for model in models:
-        accuracy = precision = recall = f1 = 0
+    for model in models:  # looping over models
+        accuracy = precision = recall = f1 = 0  # initializing metrics
+        # indices of train and validation using stratified kfolds cross validation
         for train_index, val_index in skf.split(x_train, y_train):
             # training validation split
-            x_train_, x_val_ = x_train[train_index], x_train[val_index]
-            y_train_, y_val_ = y_train[train_index], y_train[val_index]
+            x_train_, x_val_ = x_train[train_index], x_train[val_index]  # features
+            y_train_, y_val_ = y_train[train_index], y_train[val_index]  # target
             # model fitting
             model.fit(x_train_, y_train_)
+            # model prediction
             y_pred = model.predict(x_train_)
-            # metrics calculations
+            # metrics calculations using actual arrangement of training and validation split
             accuracy += balanced_accuracy_score(y_train_, y_pred)
             precision += precision_score(y_train_, y_pred)
             recall += recall_score(y_train_, y_pred)
             f1 += f1_score(y_train_, y_pred, average="weighted")
-        comparison[model.__class__.__name__] = [accuracy / kfolds, precision / kfolds, recall / kfolds, f1 / kfolds]
-    return DataFrame.from_dict(comparison, orient="index", columns=["Accuracy", "Precision", "Recall", "F1-score"])
+        # set comparison row
+        comparison[model.__class__.__name__] = [accuracy / kfolds,
+                                                precision / kfolds,
+                                                recall / kfolds,
+                                                f1 / kfolds]
+    return DataFrame.from_dict(comparison, orient="index",
+                               columns=["Accuracy", "Precision", "Recall", "F1-score"])
 
 
 def compare_models(x_train: numpy.ndarray, x_test: numpy.ndarray, y_train: numpy.ndarray,
@@ -153,10 +165,11 @@ def compare_models(x_train: numpy.ndarray, x_test: numpy.ndarray, y_train: numpy
     :return: dataframe of models evaluation
     """
     comparison = {}
-    for model in models:
+    for model in models:  # looping over models
         model.fit(x_train, y_train)
         y_train_pred = model.predict(x_train)
         y_test_pred = model.predict(x_test)
+        # set comparison row
         comparison[model.__class__.__name__] = [f1_score(y_train, y_train_pred, average="weighted"),
                                                 f1_score(y_test, y_test_pred, average="weighted")]
         # model saving
@@ -174,10 +187,13 @@ def tune_model(x_train: numpy.ndarray, y_train: numpy.ndarray, model: object, kf
     :param grid_param: grid search parameters
     :return: return grid search best parameters
     """
-    skf = StratifiedKFold(n_splits=kfolds)
-    grid_search = GridSearchCV(model(), param_grid=grid_param, scoring="f1_weighted", cv=skf)
-    grid_search.fit(x_train, y_train)
-    print("Best params with F1-score = " + str(grid_search.best_score_) + " :\n\n" + str(grid_search.best_params_))
+    skf = StratifiedKFold(n_splits=kfolds)  # stratified kfolds
+    grid_search = GridSearchCV(model(), param_grid=grid_param, scoring="f1_weighted",
+                               cv=skf)  # create grid search object
+    grid_search.fit(x_train, y_train)  # fit to grid search
+    print("Best params with F1-score = " +
+          str(grid_search.best_score_) + " :\n\n" +
+          str(grid_search.best_params_))  # print recap message
     return grid_search.best_params_
 
 

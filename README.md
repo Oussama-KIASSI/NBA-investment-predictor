@@ -8,8 +8,6 @@ NBA-investment-predictor
 │   app.py
 │   EDA & Processing.ipynb
 │   Model development.ipynb
-│   Pipfile
-│   Pipfile.lock
 │   README.md
 │   requirements.txt
 │   utils.py
