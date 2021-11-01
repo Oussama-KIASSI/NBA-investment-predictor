@@ -37,6 +37,51 @@ def save_data(data: _pd.DataFrame, data_store_path: str = r"Data",
     data.to_csv(path, index=False)
 
 
+def save_scaler(scaler: object, scaler_store_path: str = r"Models\Scaler",
+                scaler_type: str = "MinMax"):
+    """
+    save scaler to scaler store with regards to its type
+    :param scaler: scaler to be saved
+    :param scaler_store_path: folder to save in scaler
+    :param scaler_type: type of scaler (MinMax, Standard, etc.)
+    """
+    path = os.path.join(scaler_store_path, scaler_type + "Scaler.pkl")  # path where scaler will be stored
+    with open(path, 'wb') as f:
+        _pkl.dump(scaler, f)
+
+
+def load_scaler(file_path: str = r"Models\Scaler\MinMaxScaler.pkl"):
+    """
+    load scaler from path
+    :param file_path: path of the scaler
+    :return: loaded scaler
+    """
+    with open(file_path, "rb") as f:
+        return _pkl.load(f)
+
+
+def save_model(model: object, model_store_path: str = r"Models\Baseline"):
+    """
+    save model to path
+    :param model: model to save
+    :param model_store_path: path to store the model
+    """
+    path = os.path.join(model_store_path, model.__class__.__name__ + ".pkl")  # path where model will be stored
+    with open(path, 'wb') as f:
+        _pkl.dump(model, f)
+
+
+def load_model(file_path: str = r"Models\Baseline\GradientBoostingClassifier.pkl"):
+    """
+    load model from path
+    :rtype: object
+    :param file_path: path of the model to load
+    :return: loaded model
+    """
+    with open(file_path, "rb") as f:
+        return _pkl.load(f)
+
+
 def missing_values_table(data: _pd.DataFrame):
     """
     analyze missing values in dataframe
@@ -91,51 +136,6 @@ def correlation_heatmap(data: _pd.DataFrame, figsize: tuple = (12, 9), matrix: b
     figure(figsize=figsize)
     heatmap(corrmat, vmax=.8, annot=matrix, cmap="mako", square=True)
     show()
-
-
-def save_scaler(scaler: object, scaler_store_path: str = r"Models\Scaler",
-                scaler_type: str = "MinMax"):
-    """
-    save scaler to scaler store with regards to its type
-    :param scaler: scaler to be saved
-    :param scaler_store_path: folder to save in scaler
-    :param scaler_type: type of scaler (MinMax, Standard, etc.)
-    """
-    path = os.path.join(scaler_store_path, scaler_type + "Scaler.pkl")  # path where scaler will be stored
-    with open(path, 'wb') as f:
-        _pkl.dump(scaler, f)
-
-
-def load_scaler(file_path: str = r"Models\Scaler\MinMaxScaler.pkl"):
-    """
-    load scaler from path
-    :param file_path: path of the scaler
-    :return: loaded scaler
-    """
-    with open(file_path, "rb") as f:
-        return _pkl.load(f)
-
-
-def save_model(model: object, model_store_path: str = r"Models\Baseline"):
-    """
-    save model to path
-    :param model: model to save
-    :param model_store_path: path to store the model
-    """
-    path = os.path.join(model_store_path, model.__class__.__name__ + ".pkl")  # path where model will be stored
-    with open(path, 'wb') as f:
-        _pkl.dump(model, f)
-
-
-def load_model(file_path: str = r"Models\Baseline\GradientBoostingClassifier.pkl"):
-    """
-    load model from path
-    :rtype: object
-    :param file_path: path of the model to load
-    :return: loaded model
-    """
-    with open(file_path, "rb") as f:
-        return _pkl.load(f)
 
 
 def compare_features(data: _pd.DataFrame, data_select: _pd.DataFrame, models: list):
