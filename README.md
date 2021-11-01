@@ -7,6 +7,7 @@ The project is organized as follow:
 NBA-investment-predictor
 │   app.py
 │   EDA & Processing.ipynb
+│   LICENSE
 │   Model development.ipynb
 │   README.md
 │   requirements.txt

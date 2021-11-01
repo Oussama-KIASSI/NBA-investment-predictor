@@ -3,22 +3,26 @@ from flask import Flask, render_template, request, jsonify
 from src.form import input_form
 from utils import *
 
-model = load_model("Models/Pipeline.pkl")  # load pipeline model in the backend
-app = Flask(__name__)  # create app
-app.config['SECRET_KEY'] = 'SECRET_KEY'  # configure secret key
-app.config['WTF_CSRF_SECRET_KEY'] = "secretkey"  # configure wtforms csrf secret key
+# load pipeline model in the backend
+model = load_model("Models/Pipeline.pkl")
+# create app
+app = Flask(__name__)
+# configure secret key
+app.config['SECRET_KEY'] = "SECRET_KEY"
+# configure wtforms csrf secret key
+app.config['WTF_CSRF_SECRET_KEY'] = "secretkey"
 
-
-@app.route('/')  # route for the homepage
+# route for the homepage
+@app.route('/')
 def home_page():
     """
     render home page
-    :return:
+    :return: rendered home page
     """
     return render_template('home.html')
 
-
-@app.route('/predict', methods=('GET', 'POST'))  # route for the prediction form
+# route for the prediction form
+@app.route('/predict', methods=('GET', 'POST'))
 def predict():
     """
     predict the worthiness of a player from form data
@@ -26,9 +30,11 @@ def predict():
     """
     # generate form
     f = input_form()
-    if not f.is_submitted():  # render prediction form
+    # render prediction form
+    if not f.is_submitted():
         return render_template('predict.html', form=f)
-    else:  # run prediction if form is_submitted
+    # run prediction if form is_submitted
+    else:
         GP = f.GP.data  # number of games played
         MIN = f.MIN.data  # number of minutes played per game
         FGM = f.FGM.data  # number of field goals made per game
@@ -43,13 +49,14 @@ def predict():
         STL = f.STL.data  # number of steals
         BLK = f.BLK.data  # number of blocks
         TOV = f.TOV.data  # number of turnovers
+        # run prediction
         prediction = int(model.predict(np.array([GP, MIN, FGA, FGperc, EFGperc, FTM, FTperc, OREB,
-                                                 DREB, AST, STL, BLK, TOV]).reshape(1, -1))[0])  # run prediction
+                                                 DREB, AST, STL, BLK, TOV]).reshape(1, -1))[0])
         # return prediction results
         return f"Player {f.Name.data} is{[' not', ''][prediction]} worth investing."
 
-
-@app.route('/predict_from_request', methods=['POST'])  # route for the prediction request
+# route for the prediction request
+@app.route('/predict_from_request', methods=['POST'])
 def predict_from_request():
     """
     predict the worthiness of a player from request data
@@ -71,8 +78,9 @@ def predict_from_request():
     STL = float(data.get("STL"))  # number of steals
     BLK = float(data.get("BLK"))  # number of blocks
     TOV = float(data.get("TOV"))  # number of turnovers
+    # run prediction
     prediction = int(model.predict(np.array([GP, MIN, FGA, FGperc, EFGperc, FTM, FTperc, OREB,
-                                             DREB, AST, STL, BLK, TOV]).reshape(1, -1))[0])  # run prediction
+                                             DREB, AST, STL, BLK, TOV]).reshape(1, -1))[0])
     # return prediction results
     return jsonify({'result': f"Player {Name} is{[' not', ''][prediction]} worth investing."})
 
