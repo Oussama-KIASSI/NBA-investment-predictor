@@ -5,6 +5,7 @@ To lunch the app on your local machine, do the following:
 The project is organized as follow:
 ```
 NBA-investment-predictor
+│   .gitignore
 │   app.py
 │   EDA & Processing.ipynb
 │   LICENSE
