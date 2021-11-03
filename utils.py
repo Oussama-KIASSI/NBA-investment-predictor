@@ -11,7 +11,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 
 def load_data(data_store_path: str = r"Data",
-              data_class: str = r"Raw", data: str = r"nba_logreg.csv"):
+              data_class: str = r"Raw", data: str = r"nba_logreg.csv") -> _pd.DataFrame:
     """
     loads data from the data store of this project with regard to the data class
     :param data_store_path: parent folder containing all project data
@@ -82,7 +82,7 @@ def load_model(file_path: str = r"Models\Baseline\GradientBoostingClassifier.pkl
         return _pkl.load(f)
 
 
-def missing_values_table(data: _pd.DataFrame):
+def missing_values_table(data: _pd.DataFrame) -> _pd.DataFrame:
     """
     analyze missing values in dataframe
     :param data: pandas dataframe to analyze
@@ -138,7 +138,7 @@ def correlation_heatmap(data: _pd.DataFrame, figsize: tuple = (12, 9), matrix: b
     show()
 
 
-def compare_features(data: _pd.DataFrame, data_select: _pd.DataFrame, models: list):
+def compare_features(data: _pd.DataFrame, data_select: _pd.DataFrame, models: list) -> _pd.DataFrame:
     """
     compare features impact on models performance
     :param data: original dataframe
@@ -172,7 +172,7 @@ def compare_features(data: _pd.DataFrame, data_select: _pd.DataFrame, models: li
     return _pd.DataFrame.from_dict(comparison, orient="index", columns=["All features", "Selected features"])
 
 
-def compare_models_kfolds(x_train: _np.ndarray, y_train: _np.ndarray, models: list, kfolds: int):
+def compare_models_kfolds(x_train: _np.ndarray, y_train: _np.ndarray, models: list, kfolds: int) -> _pd.DataFrame:
     """
     compare models and metrics
     :param x_train: training features
@@ -213,7 +213,7 @@ def compare_models_kfolds(x_train: _np.ndarray, y_train: _np.ndarray, models: li
 
 
 def compare_models(x_train: _np.ndarray, x_test: _np.ndarray, y_train: _np.ndarray,
-                   y_test: _np.ndarray, models: list, model_store_path: str):
+                   y_test: _np.ndarray, models: list, model_store_path: str) -> _pd.DataFrame:
     """
     compare using F1-score and save models
     :param x_train: training features
